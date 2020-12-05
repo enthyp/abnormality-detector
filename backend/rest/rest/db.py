@@ -93,9 +93,11 @@ class CassandraDAO:
             (criteria, name),
         )
 
-    def remove_meeting(self, name):
+    def clear_meeting(self, name):
         self.session.execute(
-            f"DELETE FROM {self.meetings_table} WHERE meeting_name=%s", (name,)
+            f"UPDATE {self.meetings_table} "
+            f"SET monitored=false, criteria='[]' "
+            f"WHERE meeting_name=%s IF EXISTS;", (name,)
         )
 
     def meeting_details(self, name):
